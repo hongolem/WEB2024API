@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OurSchoolApi.Data;
 using OurSchoolApi.Models;
 
@@ -72,6 +73,21 @@ namespace OurSchoolApi.Controllers
             _context.Classrooms.Remove(classroom);
             _context.SaveChanges();
             return Ok();
+        }
+
+        [HttpGet("{id}/students")]
+        public async Task<IActionResult> GetStudents(int id)
+        {
+            _logger.LogInformation($"Get students in class with id {id}");
+            var classroom = await _context.Classrooms
+                .Include(x => x.Students)
+                .Where(x => x.Id == id)
+                .SingleOrDefaultAsync();
+            if (classroom == null)
+            {
+                return NotFound("classroom not found");
+            }
+            return Ok(classroom.Students);
         }
     }
 }
