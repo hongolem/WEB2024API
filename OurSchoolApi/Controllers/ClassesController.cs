@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OurSchoolApi.Data;
 using OurSchoolApi.Models;
@@ -7,13 +8,13 @@ namespace OurSchoolApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClassController : ControllerBase
+    public class ClassesController : ControllerBase
     {
-        private readonly ILogger<ClassController> _logger;
+        private readonly ILogger<ClassesController> _logger;
         private readonly SchoolDbContext _context;
-        public ClassController(
+        public ClassesController(
             SchoolDbContext context, 
-            ILogger<ClassController> logger)
+            ILogger<ClassesController> logger)
         {
             _context = context;
             _logger = logger;
@@ -39,6 +40,7 @@ namespace OurSchoolApi.Controllers
             return Ok(classroom);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult Post([FromBody] Classroom classroom)
         {
